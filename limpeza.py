@@ -5,32 +5,27 @@ import pandas as pd
 OBRIGATORIAS = {"telefone", "cpf", "email"}
 
 def limpar_numero(valor):
-    """Mantém somente dígitos; nulos ou valores sem dígitos retornam string vazia."""
     if pd.isna(valor):
         return ""
-    return re.sub(r"\\D", "", str(valor))
+    return re.sub(r"\D", "", str(valor))
 
 def normalizar_telefone(valor):
-    """Remove formatação e prefixo +55 reconhecido; não valida titularidade."""
     digitos = limpar_numero(valor)
     if digitos.startswith("55") and len(digitos) in (12, 13):
         digitos = digitos[2:]
     return digitos
 
 def telefone_tamanho_valido(valor):
-    """Considera adequado ao padrão nacional o comprimento de 10 ou 11 dígitos."""
     return len(normalizar_telefone(valor)) in (10, 11)
 
 def email_valido(valor):
-    """Verifica formato estrutural simples; não confirma existência do endereço."""
     if pd.isna(valor):
         return False
     texto = str(valor).strip()
-    padrao = r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+"
+    padrao = r"[A-Za-z0-9.!#$%&'*+/=?^_\x60{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+"
     return bool(re.fullmatch(padrao, texto))
 
 def cpf_valido(valor):
-    """Valida os dois dígitos verificadores; não consulta situação cadastral oficial."""
     digitos = limpar_numero(valor)
     if len(digitos) != 11 or digitos == digitos[0] * 11:
         return False
@@ -45,7 +40,6 @@ def cpf_valido(valor):
     return True
 
 def tratar_clientes(df):
-    """Retorna cópia com campos normalizados; preserva os dados originais."""
     faltantes = sorted(OBRIGATORIAS - set(df.columns))
     if faltantes:
         raise ValueError("DataFrame sem as colunas obrigatórias: " + ", ".join(faltantes))
@@ -60,7 +54,6 @@ def tratar_clientes(df):
     return resultado
 
 def gerar_relatorio_clientes(df):
-    """Resume os indicadores calculados por tratar_clientes()."""
     necessarias = {"email_formato_ok", "telefone_tamanho_ok", "cpf_11_digitos", "cpf_valido"}
     faltantes = sorted(necessarias - set(df.columns))
     if faltantes:
