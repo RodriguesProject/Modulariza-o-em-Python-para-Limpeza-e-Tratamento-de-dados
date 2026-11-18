@@ -1,112 +1,227 @@
-# Limpeza e Tratamento de Dados com Python
+# Limpeza, Padronização e Modularização de Dados com Python
 
-Projeto demonstrativo de preparação de dados cadastrais e organização de um fluxo reutilizável de limpeza com Python. O trabalho parte de arquivos de exemplo com inconsistências de formatação e transforma regras aplicadas manualmente em funções reutilizáveis, reunidas em um módulo.
+[![Python](https://img.shields.io/badge/Python-3.x-blue)](https://www.python.org/)
+[![Pandas](https://img.shields.io/badge/Biblioteca-Pandas-150458)](https://pandas.pydata.org/)
+[![Data Quality](https://img.shields.io/badge/Focus-Data%20Quality-brightgreen)](https://github.com/RodriguesProject)
 
-> **Objetivo do projeto:** demonstrar fundamentos de qualidade de dados, funções, modularização e geração de indicadores simples para apoiar a conferência de cadastros.
+Projeto demonstrativo de **preparação de dados cadastrais e modularização de rotinas de limpeza**. A atividade transforma operações inicialmente realizadas no notebook em funções reutilizáveis reunidas no módulo `limpeza.py`, com geração de indicadores simples para apoiar a conferência de cadastros.
 
-## Problema abordado
+> **Em uma frase:** organizar regras repetitivas de limpeza em um módulo Python reutilizável, preservando os dados originais e sinalizando registros que precisam de revisão.
 
-Bases operacionais podem reunir informações digitadas em formatos diferentes ou incompletos. Neste projeto, os arquivos de exemplo apresentam situações como:
+## 1. Contexto e problema
 
-- telefones com pontuação, espaços, código do país ou texto indicativo de ausência;
+Dados cadastrais podem ser digitados em formatos diferentes, conter espaços excedentes, caracteres de formatação ou informações incompletas. Essas variações dificultam filtros, cruzamentos e etapas posteriores de análise.
+
+O conjunto de exemplo deste projeto contém situações como:
+
+- telefones com espaços, parênteses, hífens e código internacional;
 - CPFs com e sem pontuação;
 - e-mails com espaços excedentes ou estrutura incompleta;
-- datas registradas em formatos diferentes.
+- valores textuais que indicam ausência de telefone.
 
-Sem padronização, essas variações dificultam filtros, validações e o uso posterior dos dados.
+O desafio foi criar um fluxo simples e reaproveitável para normalizar a representação dos campos e gerar indicadores de conferência, sem alterar silenciosamente os valores de origem ou declarar válidos dados que passaram apenas por uma verificação superficial.
 
-## Metodologia
+## 2. Objetivo e escopo
 
-O notebook documenta o desenvolvimento em etapas:
+O projeto demonstra como:
 
-1. **Leitura e diagnóstico:** carregamento dos arquivos CSV e inspeção de dimensões, tipos de dados e valores ausentes.
-2. **Preservação dos dados originais:** criação de colunas tratadas, mantendo os campos de origem para comparação.
-3. **Padronização:** remoção de caracteres não numéricos de telefone e CPF e retirada de espaços excedentes dos e-mails.
-4. **Validação básica:** verificação simplificada da estrutura dos e-mails e da quantidade de dígitos dos telefones e CPFs.
-5. **Modularização:** organização das regras em funções reutilizáveis no módulo `limpeza.py`.
-6. **Relatório e exportação:** geração de indicadores de conferência e gravação da base tratada em CSV e do resumo em JSON.
+- inspecionar um conjunto pequeno de dados cadastrais;
+- padronizar a representação de telefone, CPF e e-mail;
+- preservar as colunas originais e criar colunas tratadas;
+- aplicar verificações estruturais introdutórias;
+- organizar as regras em funções e em um módulo Python;
+- produzir um resumo em formato de dicionário e exportá-lo como JSON;
+- exportar a base tratada em CSV.
 
-## Tecnologias e conceitos
+O escopo é didático e demonstrativo. Não é um sistema de cadastro, serviço de validação oficial ou solução pronta para uso em produção.
 
-- Python
-- Pandas
-- Expressões regulares (`re`)
-- Funções, parâmetros e retornos
-- Módulos e importação de código
-- Leitura e gravação de CSV e JSON
+## 3. Metodologia e fluxo de tratamento
+
+O fluxo registrado no notebook segue estas etapas:
+
+1. **Leitura:** carregamento do CSV com Pandas, mantendo telefone, CPF e e-mail como texto para evitar perda de zeros à esquerda.
+2. **Diagnóstico:** inspeção das dimensões, tipos de dados e valores ausentes.
+3. **Preservação:** cópia do DataFrame e criação de novas colunas normalizadas, sem sobrescrever os campos de origem.
+4. **Limpeza de caracteres:** uso de expressão regular para manter somente dígitos em telefone e CPF.
+5. **Padronização de e-mail:** remoção de espaços excedentes nas extremidades e verificação de um padrão estrutural simples.
+6. **Verificações básicas:** sinalização de telefones com 10 ou 11 dígitos e CPFs com 11 dígitos após a limpeza.
+7. **Modularização:** organização das funções em `limpeza.py`, para permitir importação e reutilização em outros scripts.
+8. **Relatório e exportação:** consolidação dos indicadores e gravação dos resultados em CSV e JSON.
+
+### Fluxo lógico
+
+```text
+clientes_sujos.csv
+       |
+       v
+leitura com Pandas
+       |
+       v
+tratar_clientes()  [limpeza.py]
+       |
+       +--> colunas normalizadas e indicadores
+       |
+       v
+gerar_relatorio_clientes()
+       |
+       +--> clientes_tratados.csv
+       |
+       +--> relatorio_clientes.json
+```
+
+## 4. Tecnologias e conceitos
+
+- **Python**
+- **Pandas** — leitura, transformação e manipulação tabular
+- **re (expressões regulares)** — remoção de caracteres não numéricos e verificação estrutural de e-mail
+- Funções, parâmetros, retornos e reutilização de código
+- Módulos e importação de funções
+- CSV e JSON
 - Google Colab / Jupyter Notebook
 
-## Resultados observados no conjunto de exemplo
+## 5. Estrutura do repositório
 
-A execução documentada no notebook analisou **8 registros de clientes** e produziu os seguintes indicadores:
+| Arquivo | Finalidade |
+|---|---|
+| `limpeza.py` | Funções reutilizáveis de limpeza, verificação e geração de resumo |
+| `clientes_sujos.csv` | Base cadastral de exemplo com 8 registros |
+| `Aula_Limpeza_de_dados_Funcoes_reutilzaveis_(1) (2).ipynb` | Notebook de diagnóstico, desenvolvimento, modularização e execução do fluxo |
+| `pedidos_loja.csv` | Arquivo complementar da atividade |
+| `pedidos_loja.json` | Arquivo complementar da atividade |
+| `pedidos_loja.xlsx` | Arquivo complementar da atividade |
 
-| Indicador | Resultado |
-|---|---:|
-| Cadastros analisados | 8 |
-| E-mails aprovados na verificação simplificada de formato | 6 |
-| Telefones aprovados na regra de tamanho (10 ou 11 dígitos) | 6 |
-| CPFs com 11 dígitos após a limpeza | 8 |
+Os arquivos de pedidos fazem parte do material complementar da atividade; os indicadores apresentados neste README referem-se especificamente à base `clientes_sujos.csv`.
 
-Esses números descrevem somente os arquivos de exemplo deste repositório. Não representam desempenho de produção nem validação cadastral oficial.
+## 6. Funções disponibilizadas
 
-## Regras e limitações importantes
+### `limpar_numero(texto)`
 
-As verificações são intencionalmente introdutórias e não substituem validações completas:
+- Retorna somente os caracteres numéricos de um valor.
+- Retorna uma string vazia quando o valor é nulo.
+- É utilizada para normalizar telefone e CPF, sem validar sua autenticidade.
 
-- **E-mail:** a expressão regular verifica um padrão estrutural simples; não confirma existência, titularidade ou recebimento da caixa postal.
-- **Telefone:** a regra registrada no notebook considera válidos números com 10 ou 11 dígitos. Um número com código internacional pode ser sinalizado para revisão, mesmo contendo um telefone utilizável.
-- **CPF:** a implementação verifica a presença de 11 dígitos após a remoção da pontuação; não calcula os dígitos verificadores nem confirma a validade do documento.
-- **Dados ausentes ou inválidos:** o objetivo é sinalizar situações para análise, não inventar ou completar informações.
+### `email_valido(email)`
 
-## Estrutura do repositório
+- Aplica uma expressão regular para verificar um padrão estrutural simples.
+- Retorna `True` ou `False`.
+- Não confirma existência, titularidade ou recebimento da caixa postal.
 
-- `Aula_Limpeza_de_dados_Funcoes_reutilzaveis_(1) (2).ipynb` — notebook com diagnóstico, desenvolvimento das funções, modularização e execução do fluxo.
-- `limpeza.py` — funções reutilizáveis de limpeza e validação básica.
-- `clientes_sujos.csv` — conjunto de exemplo para tratamento cadastral.
-- `pedidos_loja.csv`, `pedidos_loja.json`, `pedidos_loja.xlsx` — arquivos de exemplo utilizados na atividade.
+### `tratar_clientes(df)`
 
-## Como executar
+- Cria uma cópia do DataFrame recebido.
+- Adiciona colunas normalizadas para telefone, CPF e e-mail.
+- Cria indicadores booleanos para as verificações básicas.
+- Mantém os campos originais disponíveis para comparação.
 
-1. Clone ou baixe este repositório.
-2. Instale as dependências:
+### `gerar_relatorio_clientes(df)`
 
-   ```bash
-   pip install pandas
-   ```
+- Resume o total de registros.
+- Conta e-mails que passaram pela verificação estrutural.
+- Conta telefones com 10 ou 11 dígitos.
+- Conta CPFs com 11 dígitos após a limpeza.
 
-3. Abra o notebook no Google Colab ou em um ambiente Jupyter.
-4. Para utilizar o módulo em outro script Python, mantenha `limpeza.py` no mesmo diretório e importe as funções:
+## 7. Resultados observados no conjunto de exemplo
 
-   ```python
-   import pandas as pd
-   from limpeza import tratar_clientes
+A execução registrada no notebook analisou **8 cadastros**.
 
-   clientes = pd.read_csv(
-       "clientes_sujos.csv",
-       dtype={
-           "telefone": "string",
-           "cpf": "string",
-           "email": "string"
-       }
-   )
+| Indicador | Resultado | O que significa |
+|---|---:|---|
+| Cadastros analisados | 8 | Quantidade de linhas processadas |
+| E-mails aprovados na verificação simplificada | 6 | Passaram pela expressão regular utilizada |
+| Telefones aprovados na regra de tamanho | 6 | Apresentaram 10 ou 11 dígitos após a limpeza |
+| CPFs com 11 dígitos após a limpeza | 8 | Atenderam ao critério de comprimento |
 
-   clientes_tratados = tratar_clientes(clientes)
-   print(clientes_tratados.head())
-   ```
+Esses resultados demonstram a execução do fluxo sobre os arquivos de exemplo. Não representam taxa de qualidade de uma base real, desempenho em produção ou validação cadastral oficial.
 
-## Possíveis evoluções
+### Exemplos de decisões de tratamento
 
-- adicionar testes automatizados para cada regra;
-- validar CPF pelos dígitos verificadores;
-- normalizar telefones nacionais e internacionais com regras explícitas;
-- registrar erros e exceções em relatório de qualidade;
-- separar leitura, transformação, relatório e exportação em módulos próprios;
-- ampliar a validação de datas e campos obrigatórios.
+- Um telefone com código internacional pode resultar em 13 dígitos e não passar pela regra nacional de 10 ou 11 dígitos. Isso sinaliza necessidade de uma regra adicional, não necessariamente um telefone inválido.
+- Um campo contendo o texto `sem telefone` resulta em string vazia após a extração de dígitos e deve ser revisado.
+- Um CPF com 11 dígitos passa pelo critério de comprimento, mas isso **não comprova** que os dígitos verificadores sejam válidos.
+- Um e-mail que passa pela expressão regular pode ainda assim não existir ou não pertencer ao titular informado.
 
-## Escopo e transparência
+## 8. Como executar
 
-Este é um projeto de aprendizagem aplicada e demonstração técnica. Os resultados apresentados correspondem à execução registrada no notebook e aos arquivos de exemplo. As validações são básicas e não devem ser utilizadas isoladamente em processos cadastrais reais.
+### Requisitos
+
+- Python 3
+- Pandas
+
+Instale a dependência:
+
+```bash
+pip install pandas
+```
+
+### Executar o módulo
+
+Mantenha `limpeza.py` e `clientes_sujos.csv` no mesmo diretório e execute:
+
+```python
+import json
+import pandas as pd
+
+from limpeza import tratar_clientes, gerar_relatorio_clientes
+
+clientes_brutos = pd.read_csv(
+    "clientes_sujos.csv",
+    dtype={
+        "telefone": "string",
+        "cpf": "string",
+        "email": "string",
+    },
+)
+
+clientes_tratados = tratar_clientes(clientes_brutos)
+relatorio = gerar_relatorio_clientes(clientes_tratados)
+
+clientes_tratados.to_csv(
+    "clientes_tratados_final.csv",
+    index=False,
+)
+
+with open("relatorio_clientes.json", "w", encoding="utf-8") as arquivo:
+    json.dump(relatorio, arquivo, ensure_ascii=False, indent=4)
+
+print(relatorio)
+```
+
+O resultado esperado para o conjunto de exemplo versionado é:
+
+```python
+{
+    "total_clientes": 8,
+    "emails_com_formato_ok": 6,
+    "telefones_com_tamanho_ok": 6,
+    "cpfs_com_11_digitos": 8,
+}
+```
+
+Os arquivos `clientes_tratados_final.csv` e `relatorio_clientes.json` são gerados localmente durante a execução; não precisam estar previamente presentes no repositório.
+
+## 9. Limitações e cuidados
+
+- **E-mail:** a expressão regular é simplificada e não verifica existência, domínio ativo, titularidade ou entrega de mensagens.
+- **Telefone:** a regra de comprimento considera somente 10 ou 11 dígitos. Não normaliza códigos internacionais nem valida números em operadoras.
+- **CPF:** a implementação remove pontuação e verifica 11 dígitos; não calcula dígitos verificadores nem confirma autenticidade.
+- **Datas:** o notebook apresenta formatos variados em `data_cadastro`, mas o módulo atual não implementa uma rotina de padronização de datas.
+- **Dados pessoais:** os arquivos são exemplos didáticos. Não utilizar dados pessoais reais ou sensíveis sem base legal, controles de acesso e medidas de proteção adequadas.
+- **Produção:** antes de uso operacional, seriam necessários testes automatizados, regras de negócio formalizadas, tratamento de exceções, logs e validações mais robustas.
+
+## 10. Próximas evoluções
+
+- Adicionar testes automatizados para cada função e casos extremos.
+- Implementar validação de CPF pelos dígitos verificadores.
+- Normalizar telefones nacionais e internacionais com regras explícitas.
+- Padronizar datas com formatos e tratamento de erros documentados.
+- Separar leitura, transformação, validação e exportação em módulos específicos.
+- Criar relatório detalhado de inconsistências por registro.
+- Adicionar documentação de parâmetros, tipos e retornos das funções.
+
+## 11. Escopo do projeto
+
+Projeto de aprendizagem aplicada que demonstra **Data Preparation, Data Quality e modularização com Python** em uma base pequena de exemplo. O valor demonstrado está na organização do fluxo, na reutilização de funções e na distinção entre padronização e validação. Não há alegação de automação implantada em ambiente empresarial ou de impacto operacional mensurado.
 
 ---
 
-**Foco do portfólio:** Data Preparation · Data Quality · Python · Pandas · Process Automation
+**Portfolio focus:** Data Preparation · Data Quality · Python · Pandas · Process Automation
