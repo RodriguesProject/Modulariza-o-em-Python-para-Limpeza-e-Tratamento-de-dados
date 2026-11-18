@@ -1,5 +1,7 @@
 # Limpeza, Padronização e Modularização de Dados com Python
 
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/RodriguesProject/Modulariza-o-em-Python-para-Limpeza-e-Tratamento-de-dados/tests.yml?branch=main&label=tests)](https://github.com/RodriguesProject/Modulariza-o-em-Python-para-Limpeza-e-Tratamento-de-dados/actions/workflows/tests.yml)
+
 [![Python](https://img.shields.io/badge/Python-3.x-blue)](https://www.python.org/)
 [![Pandas](https://img.shields.io/badge/Biblioteca-Pandas-150458)](https://pandas.pydata.org/)
 [![Data Quality](https://img.shields.io/badge/Focus-Data%20Quality-brightgreen)](https://github.com/RodriguesProject)
