@@ -225,3 +225,25 @@ Projeto de aprendizagem aplicada que demonstra **Data Preparation, Data Quality 
 ---
 
 **Portfolio focus:** Data Preparation · Data Quality · Python · Pandas · Process Automation
+
+
+## Evolução técnica do módulo
+
+O arquivo `limpeza.py` foi ampliado com:
+
+- normalização do prefixo brasileiro `55` quando reconhecido em telefones com 12 ou 13 dígitos;
+- verificação de comprimento telefônico de 10 ou 11 dígitos após a normalização;
+- validação matemática dos dois dígitos verificadores do CPF;
+- preservação dos campos originais e criação de colunas tratadas;
+- mensagens explícitas quando faltam colunas ou indicadores esperados.
+
+### Executar testes automatizados
+
+```bash
+pip install -r requirements.txt
+python -m unittest discover -s tests -v
+```
+
+Os testes cobrem casos válidos, inválidos e ausentes, além da preservação do DataFrame original. A validação de CPF é matemática e local: não consulta a Receita Federal nem confirma situação cadastral, titularidade ou autenticidade documental.
+
+**Nota sobre os resultados:** os números históricos de 8 registros apresentados acima pertencem à execução documentada da lógica original. A nova validação por dígitos verificadores é uma evolução posterior; seus resultados devem ser obtidos executando novamente o módulo atualizado sobre o CSV.
